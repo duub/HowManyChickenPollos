@@ -24,25 +24,38 @@ const PUBG = new API("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwY2I3NGQ1M
 function pollosSeason (season){
   return season.data.attributes.gameModeStats.duo.wins + season.data.attributes.gameModeStats["duo-fpp"].wins + season.data.attributes.gameModeStats.solo.wins + season.data.attributes.gameModeStats["solo-fpp"].wins + season.data.attributes.gameModeStats.squad.wins + season.data.attributes.gameModeStats["squad-fpp"].wins
 }
-async function  chickenPollos(user) {
+async function  chickenPollos() {
 
   var url_string = window.location.href; //window.location.href
   var url = new URL(url_string);
   user = url.searchParams.get("user");
+  if (!user) {user = "duubqnnp"}
 
-   var playerObj = await PUBG.getPlayerInfo(user, "pc-eu");
+  platform = url.searchParams.get("platform");
+  if (!platform) {platform = "pc"}
+
+  region = url.searchParams.get("region");
+  if (!region) {region = "eu"}
+
+  var playerObj = await PUBG.getPlayerInfo(user, platform+"-"+region);
 
    document.getElementById("user").innerHTML = user;
 
-   season = {
-"name":["division.bro.official.2018-01", "division.bro.official.2018-02", "division.bro.official.2018-03", "division.bro.official.2018-04", "division.bro.official.2018-05", "division.bro.official.2018-06", "division.bro.official.2018-07"]
-}
+   season = { "name":["division.bro.official.2018-01", "division.bro.official.2018-02", "division.bro.official.2018-03", "division.bro.official.2018-04", "division.bro.official.2018-05", "division.bro.official.2018-06", "division.bro.official.2018-07"] }
 
-   var seasonEU = await PUBG.getPlayerSeasonInfo("pc-eu", playerObj.data[0].id, season.name[6]);
-   var seasonNA = await PUBG.getPlayerSeasonInfo("pc-na", playerObj.data[0].id, season.name[6]);
+  var seasonEU = 0;
+  var seasonNA = 0;
+  var TotalPollosEU = 0;
+  var TotalPollosNA = 0;
+  var i;
+  for (i = 0; i < season.name.length; i++) {
+    seasonEU = await PUBG.getPlayerSeasonInfo(platform+"-"+region, playerObj.data[0].id, season.name[i]);
+    TotalPollosEU = TotalPollosEU + pollosSeason(seasonEU);
 
-   var TotalPollosEU = pollosSeason(seasonEU);
-   var TotalPollosNA = pollosSeason(seasonNA);
+    //waiting rate requests increase to enable this part
+    //seasonNA = await PUBG.getPlayerSeasonInfo(platform+"-eu", playerObj.data[0].id, season.name[i]);
+    //TotalPollosNA = TotalPollosNA + pollosSeason(seasonNA);
+   }
 
   document.getElementById("chickenPollos").innerHTML = TotalPollosEU+TotalPollosNA;
 }
