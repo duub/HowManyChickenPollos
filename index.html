@@ -1,0 +1,51 @@
+<html>
+<header>
+  <title>
+    uniAKcorn
+  </title>
+</header>
+
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<script src="https://rawgit.com/xF4b3r/pubgAPI/master/api.min.js"></script>
+</head>
+
+<body style="background-color:#222222;">
+  Quants chicken pollastres has sopat <span id="user"> </span>?<br />
+  <div class="container">
+    <img src="pan.png" alt="pan">
+    <div id="chickenPollos" class="centered"></div>
+  </div>
+</body>
+<script>
+
+const PUBG = new API("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwY2I3NGQ1MC03NWY4LTAxMzYtNDQ0OS0wMGZmNzQyNWFlODgiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTMyOTM1Njk2LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6Imhvd21hbnljaGlja2VuIn0.6Kbi7VN_nc6BM1HXT5JphxhXmriS8IDM6O3-16ta6pM"); // Set you API key
+
+function pollosSeason (season){
+  return season.data.attributes.gameModeStats.duo.wins + season.data.attributes.gameModeStats["duo-fpp"].wins + season.data.attributes.gameModeStats.solo.wins + season.data.attributes.gameModeStats["solo-fpp"].wins + season.data.attributes.gameModeStats.squad.wins + season.data.attributes.gameModeStats["squad-fpp"].wins
+}
+async function  chickenPollos(user) {
+
+  var url_string = window.location.href; //window.location.href
+  var url = new URL(url_string);
+  user = url.searchParams.get("user");
+
+   var playerObj = await PUBG.getPlayerInfo(user, "pc-eu");
+
+   document.getElementById("user").innerHTML = user;
+
+   season = {
+"name":["division.bro.official.2018-01", "division.bro.official.2018-02", "division.bro.official.2018-03", "division.bro.official.2018-04", "division.bro.official.2018-05", "division.bro.official.2018-06", "division.bro.official.2018-07"]
+}
+
+   var seasonEU = await PUBG.getPlayerSeasonInfo("pc-eu", playerObj.data[0].id, season.name[6]);
+   var seasonNA = await PUBG.getPlayerSeasonInfo("pc-na", playerObj.data[0].id, season.name[6]);
+
+   var TotalPollosEU = pollosSeason(seasonEU);
+   var TotalPollosNA = pollosSeason(seasonNA);
+
+  document.getElementById("chickenPollos").innerHTML = TotalPollosEU+TotalPollosNA;
+}
+chickenPollos();
+</script>
+</html>

@@ -1,0 +1,20 @@
+body {
+  color: white;
+
+  font-size: xx-large;
+  font-family: sans-serif;
+
+}
+/* Container holding the image and the text */
+.container {
+    position: relative;
+    text-align: center;
+    color: #f2a900;
+}
+
+/* Centered text */
+.centered {
+    position: relative;
+    top: -157;
+    left: -26;
+}
